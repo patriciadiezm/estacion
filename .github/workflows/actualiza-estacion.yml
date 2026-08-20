@@ -1,0 +1,44 @@
+name: Actualizar la estación
+
+on:
+  schedule:
+    # 05:40 UTC cada día. En hora peninsular son las 7:40 en verano
+    # y las 6:40 en invierno, con el día anterior ya cerrado.
+    - cron: "40 5 * * *"
+  workflow_dispatch:      # botón para lanzarlo a mano cuando quieras
+
+permissions:
+  contents: write         # necesario para que el robot pueda guardar los cambios
+
+concurrency:
+  group: actualiza-estacion
+  cancel-in-progress: false
+
+jobs:
+  actualizar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar el repositorio
+        uses: actions/checkout@v4
+
+      - name: Preparar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Pedir los días nuevos y rehacer la página
+        env:
+          WU_API_KEY: ${{ secrets.WU_API_KEY }}
+        run: python3 actualiza.py
+
+      - name: Guardar los cambios
+        run: |
+          git config user.name "Estación de Cerezo"
+          git config user.email "actions@github.com"
+          git add icerez2_diario.csv index.html
+          if git diff --staged --quiet; then
+            echo "No hay nada nuevo que guardar."
+          else
+            git commit -m "Datos hasta $(date -u +%Y-%m-%d)"
+            git push
+          fi
