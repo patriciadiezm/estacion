@@ -1,0 +1,1056 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Estación de Cerezo de Abajo · ICEREZ2</title>
+
+<script id="datos-incrustados" type="application/json">null</script>
+
+<style>
+:root{
+  --tinta:#16202B;
+  --tinta-suave:#5A6874;
+  --papel:#EDEFEA;
+  --linea:#C9CFC7;
+  --escarcha:#7FA9C4;
+  --helada:#2C5A85;
+  --agua:#2F7D75;
+  --agua-honda:#14453F;
+  --almagre:#9E3B26;
+  --paramera:#8A6321;
+  --seco:#D9C48F;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:var(--papel);
+  background-image:
+    linear-gradient(var(--linea) 1px, transparent 1px),
+    linear-gradient(90deg, var(--linea) 1px, transparent 1px);
+  background-size:22px 22px;
+  background-position:-1px -1px;
+  color:var(--tinta);
+  font:400 17px/1.62 "Iowan Old Style","Charter",Georgia,"Times New Roman",serif;
+}
+.envoltorio{max-width:940px;margin:0 auto;padding:0 20px 90px}
+
+/* --- tipografía --- */
+.rotulo{
+  font-family:"Futura","Avenir Next","Trebuchet MS",sans-serif;
+  text-transform:uppercase;
+  letter-spacing:.22em;
+  font-weight:600;
+  font-size:11px;
+  color:var(--tinta-suave);
+}
+.cifra{font-family:"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;font-variant-numeric:tabular-nums}
+h1,h2,h3{font-family:"Futura","Avenir Next","Trebuchet MS",sans-serif;font-weight:600;margin:0}
+
+/* --- cabecera --- */
+header{padding:52px 0 30px;border-bottom:2px solid var(--tinta)}
+h1{font-size:clamp(30px,7vw,52px);letter-spacing:-.015em;line-height:1.02}
+h1 small{display:block;font-size:clamp(13px,2.6vw,17px);letter-spacing:.24em;font-weight:400;color:var(--tinta-suave);margin-bottom:14px}
+.coordenadas{margin-top:16px;font-size:13px;color:var(--tinta-suave)}
+.coordenadas span{margin-right:20px;white-space:nowrap}
+
+/* --- carga --- */
+#zona-carga{
+  margin:44px 0;padding:46px 30px;text-align:center;
+  border:2px dashed var(--tinta-suave);background:rgba(255,255,255,.6);
+}
+#zona-carga.encima{border-color:var(--agua);background:rgba(47,125,117,.09)}
+#zona-carga h2{font-size:20px;margin-bottom:10px}
+#zona-carga p{margin:0 auto;max-width:46ch;color:var(--tinta-suave);font-size:15px}
+.boton{
+  font-family:"Futura","Avenir Next","Trebuchet MS",sans-serif;
+  text-transform:uppercase;letter-spacing:.16em;font-size:12px;font-weight:600;
+  background:var(--tinta);color:var(--papel);border:0;padding:13px 24px;
+  cursor:pointer;margin-top:22px;
+}
+.boton:hover{background:var(--agua-honda)}
+.boton.fantasma{background:transparent;color:var(--tinta);border:1.5px solid var(--tinta)}
+.boton.fantasma:hover{background:var(--tinta);color:var(--papel)}
+:focus-visible{outline:3px solid var(--agua);outline-offset:3px}
+#aviso{margin-top:18px;color:var(--almagre);font-size:15px;display:none}
+
+/* --- secciones --- */
+section{padding:46px 0;border-bottom:1px solid var(--linea)}
+section > h2{font-size:clamp(21px,4vw,28px);letter-spacing:-.01em;margin-bottom:6px}
+.entradilla{color:var(--tinta-suave);font-size:15.5px;max-width:62ch;margin:0 0 26px}
+
+/* --- selector de año --- */
+.anios{display:flex;flex-wrap:wrap;gap:7px;margin:26px 0 30px}
+.anios button{
+  font-family:"SF Mono",Menlo,Consolas,monospace;font-size:14px;
+  background:transparent;border:1.5px solid var(--linea);color:var(--tinta-suave);
+  padding:8px 15px;cursor:pointer;
+}
+.anios button:hover{border-color:var(--tinta-suave)}
+.anios button[aria-pressed="true"]{background:var(--tinta);border-color:var(--tinta);color:var(--papel)}
+
+/* --- el mosaico --- */
+.modos{display:flex;flex-wrap:wrap;gap:0;margin-bottom:20px;border:1.5px solid var(--tinta);width:fit-content;max-width:100%}
+.modos button{
+  font-family:"Futura","Avenir Next","Trebuchet MS",sans-serif;
+  text-transform:uppercase;letter-spacing:.13em;font-size:11px;font-weight:600;
+  background:transparent;border:0;border-right:1.5px solid var(--tinta);
+  color:var(--tinta);padding:11px 16px;cursor:pointer;
+}
+.modos button:last-child{border-right:0}
+.modos button[aria-pressed="true"]{background:var(--tinta);color:var(--papel)}
+#mosaico{width:100%;height:auto;display:block}
+#mosaico rect.dia{cursor:pointer}
+#mosaico rect.dia:hover{stroke:var(--tinta);stroke-width:1.6}
+.escala{display:flex;align-items:center;gap:11px;margin-top:16px;font-size:12px;color:var(--tinta-suave);flex-wrap:wrap}
+.escala .muestras{display:flex}
+.escala .muestras i{width:22px;height:13px;display:block}
+#lectura{
+  margin-top:18px;padding:15px 18px;background:#fff;border-left:4px solid var(--tinta);
+  font-size:14.5px;min-height:56px;
+}
+#lectura .fecha{font-family:"Futura","Avenir Next",sans-serif;text-transform:uppercase;letter-spacing:.14em;font-size:11px;color:var(--tinta-suave);display:block;margin-bottom:5px}
+#lectura b{font-family:"SF Mono",Menlo,Consolas,monospace;font-weight:600;font-variant-numeric:tabular-nums}
+
+/* --- cifras --- */
+.cifras{display:grid;grid-template-columns:repeat(auto-fit,minmax(158px,1fr));gap:1.5px;background:var(--linea);border:1.5px solid var(--linea)}
+.cifras div{background:var(--papel);padding:20px 17px}
+.cifras .valor{font-family:"SF Mono",Menlo,Consolas,monospace;font-size:clamp(25px,5vw,34px);line-height:1;font-variant-numeric:tabular-nums;display:block;margin-bottom:9px}
+.cifras .pie{font-size:12.5px;color:var(--tinta-suave);line-height:1.4}
+
+/* --- tablas --- */
+table{width:100%;border-collapse:collapse;font-size:14.5px;margin-top:8px}
+th{
+  font-family:"Futura","Avenir Next","Trebuchet MS",sans-serif;text-transform:uppercase;
+  letter-spacing:.13em;font-size:10.5px;font-weight:600;color:var(--tinta-suave);
+  text-align:right;padding:0 0 9px;border-bottom:1.5px solid var(--tinta);
+}
+th:first-child{text-align:left}
+td{padding:10px 0;border-bottom:1px solid var(--linea);text-align:right;font-family:"SF Mono",Menlo,Consolas,monospace;font-variant-numeric:tabular-nums}
+td:first-child{text-align:left;font-family:inherit}
+.envuelve-tabla{overflow-x:auto}
+
+svg.grafico{width:100%;height:auto;display:block;margin-top:10px}
+/* --- comparador --- */
+.filtros{display:flex;flex-wrap:wrap;gap:22px;align-items:flex-end;margin:22px 0 18px}
+.filtros label{display:block;margin-bottom:7px}
+.filtros select{
+  font-family:"SF Mono",Menlo,Consolas,monospace;font-size:14px;
+  background:#fff;border:1.5px solid var(--tinta);color:var(--tinta);
+  padding:9px 11px;cursor:pointer;min-width:210px;
+}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:24px;align-items:center}
+.chips button{
+  font-family:"SF Mono",Menlo,Consolas,monospace;font-size:13.5px;
+  background:transparent;border:1.5px solid var(--linea);color:var(--tinta-suave);
+  padding:7px 13px;cursor:pointer;display:flex;align-items:center;gap:7px;
+}
+.chips button i{width:11px;height:11px;display:block;border:1px solid rgba(0,0,0,.22)}
+.chips button[aria-pressed="true"]{border-color:var(--tinta);color:var(--tinta);background:#fff}
+.chips button[aria-pressed="false"] i{background:transparent !important}
+.chips .todos{border-style:dashed}
+table.matriz td, table.matriz th{text-align:center;padding:0}
+table.matriz td:first-child, table.matriz th:first-child{text-align:left;padding-right:14px}
+table.matriz td span{display:block;padding:9px 4px;font-size:13px}
+table.matriz td.incompleto span{
+  background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.55) 0 3px,transparent 3px 6px);
+}
+.desv{font-family:"SF Mono",Menlo,Consolas,monospace}
+.desv.mas{color:var(--agua)}
+.desv.menos{color:var(--almagre)}
+
+.oculto{display:none !important}
+
+@media (prefers-reduced-motion:no-preference){
+  section{animation:surge .5s ease both}
+  @keyframes surge{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
+}
+@media (max-width:560px){
+  body{font-size:16px}
+  .modos button{padding:10px 11px;font-size:10px;letter-spacing:.08em}
+}
+</style>
+
+<div class="envoltorio">
+
+<header>
+  <h1><small>Estación meteorológica ICEREZ2</small>Cerezo de Abajo</h1>
+  <div class="coordenadas cifra">
+    <span>1.027 m de altitud</span><span>41,22° N · 3,59° O</span><span id="periodo">Sierra de Ayllón, Segovia</span>
+  </div>
+</header>
+
+<div id="zona-carga">
+  <h2>Suelta aquí el fichero de datos</h2>
+  <p>Arrastra <span class="cifra">icerez2_diario.csv</span> sobre este recuadro, o pulsa el botón para buscarlo. Los datos no salen de tu ordenador.</p>
+  <button class="boton" id="btn-buscar">Buscar el fichero</button>
+  <input type="file" id="entrada" accept=".csv,text/csv" style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none">
+  <p id="aviso"></p>
+</div>
+
+<main id="panel" class="oculto">
+
+  <section>
+    <span class="rotulo">Día a día</span>
+    <h2>El año, casilla a casilla</h2>
+    <p class="entradilla">Cada cuadrado es un día. Las filas son los meses y las columnas, los días del mes. Cambia lo que miden los colores y pasa el ratón por encima para leer la jornada.</p>
+
+    <div class="anios" id="anios" role="group" aria-label="Elegir año"></div>
+
+    <div class="modos" id="modos" role="group" aria-label="Elegir qué muestran los colores">
+      <button data-modo="lluvia" aria-pressed="true">Lluvia</button>
+      <button data-modo="sequia" aria-pressed="false">Sequía</button>
+      <button data-modo="helada" aria-pressed="false">Heladas</button>
+      <button data-modo="calor" aria-pressed="false">Temperatura</button>
+    </div>
+
+    <svg id="mosaico" role="img" aria-label="Mosaico de días del año"></svg>
+    <div class="escala" id="escala"></div>
+    <div id="lectura"><span class="fecha">Sin selección</span>Pasa el ratón o toca un cuadrado para ver los datos de ese día.</div>
+  </section>
+
+  <section>
+    <span class="rotulo">Resumen</span>
+    <h2 id="titulo-cifras">Las cifras del año</h2>
+    <p class="entradilla">Calculadas solo con los días que la estación registró. Si hubo cortes, míralos al final de la página antes de sacar conclusiones.</p>
+    <div class="cifras" id="cifras"></div>
+  </section>
+
+  <section>
+    <span class="rotulo">Pluviómetro</span>
+    <h2>Cuánto llovió cada mes</h2>
+    <p class="entradilla">Litros por metro cuadrado acumulados en el mes. La línea de puntos marca la media mensual de todos los años registrados.</p>
+    <svg id="grafico-lluvia" class="grafico" role="img" aria-label="Precipitación mensual"></svg>
+  </section>
+
+  <section>
+    <span class="rotulo">Sequía</span>
+    <h2>Las rachas sin una gota</h2>
+    <p class="entradilla">Días seguidos con menos de 1 mm. En el secano de la meseta estas rachas cuentan más que el total anual: cien litros bien repartidos no son cien litros de golpe.</p>
+    <div class="envuelve-tabla"><table id="tabla-sequia"></table></div>
+  </section>
+
+  <section>
+    <span class="rotulo">Heladas</span>
+    <h2>Cuándo se hiela la tierra</h2>
+    <p class="entradilla">La última helada de primavera y la primera de otoño delimitan la ventana en la que se puede plantar sin miedo. A esta altitud, es el dato más útil de toda la página.</p>
+    <div class="envuelve-tabla"><table id="tabla-heladas"></table></div>
+  </section>
+
+  <section>
+    <span class="rotulo">Termómetro</span>
+    <h2>El vaivén de cada mes</h2>
+    <p class="entradilla">La banda va de la media de las mínimas a la media de las máximas. Cuanto más gruesa, mayor es la oscilación entre la noche y el mediodía.</p>
+    <svg id="grafico-temperatura" class="grafico" role="img" aria-label="Temperaturas medias por mes"></svg>
+  </section>
+
+  <section>
+    <span class="rotulo">Récords</span>
+    <h2>Lo más de lo más</h2>
+    <div class="envuelve-tabla"><table id="tabla-records"></table></div>
+  </section>
+
+  <section>
+    <span class="rotulo">Letra pequeña</span>
+    <h2>Qué días faltan</h2>
+    <p class="entradilla">Una estación doméstica se queda sin luz, sin wifi o sin pilas. Estos son los huecos del registro, para que sepas de qué años puedes fiarte.</p>
+    <div class="envuelve-tabla"><table id="tabla-huecos"></table></div>
+  </section>
+
+
+  <section id="comparador">
+    <span class="rotulo">Comparar</span>
+    <h2>Un año contra otro</h2>
+    <p class="entradilla">Elige qué medir y compara los años entre sí, o mira cómo se ha portado un mismo mes a lo largo de los años. Las casillas rayadas avisan de que a ese mes le faltan días de registro.</p>
+
+    <div class="modos" id="ejes" role="group" aria-label="Elegir la comparación">
+      <button data-eje="anios" aria-pressed="true">Año contra año</button>
+      <button data-eje="meses" aria-pressed="false">Un mes, todos los años</button>
+    </div>
+
+    <div class="filtros">
+      <div>
+        <label class="rotulo" for="metrica">Qué comparo</label>
+        <select id="metrica"></select>
+      </div>
+      <div id="envoltura-mes" class="oculto">
+        <label class="rotulo" for="mes-elegido">Qué mes</label>
+        <select id="mes-elegido"></select>
+      </div>
+    </div>
+
+    <div class="chips" id="chips-anios"></div>
+
+    <svg id="grafico-comparador" class="grafico" role="img" aria-label="Comparación"></svg>
+    <div class="escala" id="pie-comparador"></div>
+    <div class="envuelve-tabla" style="margin-top:26px"><table id="tabla-comparador"></table></div>
+  </section>
+
+  <section style="border-bottom:0">
+    <span class="rotulo">Compartir</span>
+    <h2>Llévate esta página</h2>
+    <p class="entradilla">Genera una copia con los datos ya metidos dentro. Es un solo fichero: se abre con doble clic, funciona sin internet y se puede mandar por correo o subir a una web tal cual.</p>
+    <button class="boton" id="btn-exportar">Descargar la página con los datos</button>
+    <button class="boton fantasma" id="btn-otro">Cargar otro fichero</button>
+  </section>
+
+</main>
+</div>
+
+<script>
+"use strict";
+
+const PLANTILLA = document.documentElement.outerHTML;
+
+const MESES = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
+const MES3 = ["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
+const SECO = 1.0;   // umbral de día seco, en mm
+
+let DIAS = [];      // {f, a, m, d, tmax, tmin, tmed, prec}
+let anioActivo = "todos";
+let modoActivo = "lluvia";
+
+/* ---------- utilidades ---------- */
+const n1 = v => v == null ? "—" : v.toFixed(1).replace(".", ",");
+const n0 = v => v == null ? "—" : Math.round(v).toLocaleString("es-ES");
+const bisiesto = a => (a % 4 === 0 && a % 100 !== 0) || a % 400 === 0;
+const diasMes = (a, m) => [31, bisiesto(a) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][m - 1];
+
+function fechaLarga(f){
+  const [a, m, d] = f.split("-");
+  return `${+d} de ${MESES[+m - 1].toLowerCase()} de ${a}`;
+}
+function mezcla(c1, c2, t){
+  t = Math.max(0, Math.min(1, t));
+  const h = c => [parseInt(c.slice(1,3),16), parseInt(c.slice(3,5),16), parseInt(c.slice(5,7),16)];
+  const [r1,g1,b1] = h(c1), [r2,g2,b2] = h(c2);
+  const v = (x,y) => Math.round(x + (y - x) * t);
+  return `rgb(${v(r1,r2)},${v(g1,g2)},${v(b1,b2)})`;
+}
+function rampa(paradas, t){
+  t = Math.max(0, Math.min(1, t));
+  const tramo = 1 / (paradas.length - 1);
+  const i = Math.min(paradas.length - 2, Math.floor(t / tramo));
+  return mezcla(paradas[i], paradas[i + 1], (t - i * tramo) / tramo);
+}
+const media = xs => xs.length ? xs.reduce((a,b) => a+b, 0) / xs.length : null;
+
+/* ---------- lectura del CSV ---------- */
+function troceaLinea(linea){
+  const celdas = []; let act = "", comillas = false;
+  for (let i = 0; i < linea.length; i++){
+    const c = linea[i];
+    if (c === '"'){ if (comillas && linea[i+1] === '"'){ act += '"'; i++; } else comillas = !comillas; }
+    else if (c === "," && !comillas){ celdas.push(act); act = ""; }
+    else act += c;
+  }
+  celdas.push(act);
+  return celdas;
+}
+function aNumero(v){
+  if (v == null) return null;
+  v = String(v).trim();
+  if (v === "" || v === "None" || v === "null" || v === "--") return null;
+  const x = parseFloat(v);
+  return Number.isFinite(x) ? x : null;
+}
+function leeCSV(texto){
+  const lineas = texto.replace(/\r/g, "").split("\n").filter(l => l.trim() !== "");
+  if (!lineas.length) throw new Error("El fichero está vacío.");
+  const cab = troceaLinea(lineas[0]).map(c => c.trim());
+  const col = nombres => { for (const nm of nombres){ const i = cab.indexOf(nm); if (i !== -1) return i; } return -1; };
+
+  const iF = col(["obsTimeLocal","fecha","date","obsTimeUtc"]);
+  const iMax = col(["tempHigh","tmax","tempMax"]);
+  const iMin = col(["tempLow","tmin","tempMin"]);
+  const iMed = col(["tempAvg","tmed","tempAverage"]);
+  const iP = col(["precipTotal","precip","lluvia","precipitation"]);
+  if (iF === -1) throw new Error("No encuentro la columna de fechas (obsTimeLocal). ¿Es el CSV que generó el script de descarga?");
+
+  const filas = [];
+  for (let k = 1; k < lineas.length; k++){
+    const c = troceaLinea(lineas[k]);
+    const f = (c[iF] || "").trim().slice(0, 10);
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(f)) continue;
+    filas.push({
+      f, a:+f.slice(0,4), m:+f.slice(5,7), d:+f.slice(8,10),
+      tmax: iMax === -1 ? null : aNumero(c[iMax]),
+      tmin: iMin === -1 ? null : aNumero(c[iMin]),
+      tmed: iMed === -1 ? null : aNumero(c[iMed]),
+      prec: iP === -1 ? null : aNumero(c[iP])
+    });
+  }
+  if (!filas.length) throw new Error("No he encontrado ninguna fila con fecha válida.");
+  filas.sort((x, y) => x.f < y.f ? -1 : 1);
+  const vistas = new Set();
+  return filas.filter(r => vistas.has(r.f) ? false : (vistas.add(r.f), true));
+}
+
+/* ---------- selección ---------- */
+const seleccion = () => anioActivo === "todos" ? DIAS : DIAS.filter(r => r.a === +anioActivo);
+const porFecha = new Map();
+
+/* ---------- rachas de sequía ---------- */
+function rachasSequia(filas){
+  const rachas = []; let ini = null, fin = null, n = 0;
+  const cierra = () => { if (n >= 5) rachas.push({ini, fin, n}); ini = null; n = 0; };
+  let anterior = null;
+  for (const r of filas){
+    if (r.prec == null){ cierra(); anterior = r.f; continue; }
+    // un hueco en el registro rompe la racha
+    if (anterior && n > 0){
+      const dif = (new Date(r.f) - new Date(anterior)) / 86400000;
+      if (dif > 1.5) cierra();
+    }
+    if (r.prec < SECO){ if (n === 0) ini = r.f; fin = r.f; n++; }
+    else cierra();
+    anterior = r.f;
+  }
+  cierra();
+  return rachas.sort((a, b) => b.n - a.n);
+}
+
+/* ---------- pintado del mosaico ---------- */
+const ESCALAS = {
+  lluvia: {
+    titulo: "Litros por metro cuadrado",
+    tramos: ["seco", "1", "5", "15", "30+"],
+    color: r => r.prec == null ? null
+      : r.prec < 0.2 ? "#E4E7E0"
+      : rampa(["#CBDEDA","#7FBAB1","#2F7D75","#14453F"], Math.min(1, r.prec / 30)),
+    texto: r => r.prec == null ? "sin dato de lluvia"
+      : r.prec < 0.2 ? "sin lluvia" : `${n1(r.prec)} mm`
+  },
+  sequia: {
+    titulo: "Días seguidos sin llover",
+    tramos: ["llovió", "5", "15", "30", "45+"],
+    color: r => r.prec == null ? null
+      : r.racha === 0 ? "#CBDEDA"
+      : rampa(["#F0E9D6","#D9C48F","#B8935A","#8A6321"], Math.min(1, r.racha / 45)),
+    texto: r => r.prec == null ? "sin dato de lluvia"
+      : r.racha === 0 ? "día de lluvia" : `${r.racha}.º día seco seguido`
+  },
+  helada: {
+    titulo: "Mínima bajo cero",
+    tramos: ["sin helada", "-2", "-5", "-9", "-13"],
+    color: r => r.tmin == null ? null
+      : r.tmin >= 0 ? "#E4E7E0"
+      : rampa(["#C4D9E6","#7FA9C4","#2C5A85","#16344F"], Math.min(1, -r.tmin / 13)),
+    texto: r => r.tmin == null ? "sin dato de mínima"
+      : r.tmin >= 0 ? "sin helada" : `helada de ${n1(r.tmin)} °C`
+  },
+  calor: {
+    titulo: "Máxima del día",
+    tramos: ["0", "10", "20", "30", "40 °C"],
+    color: r => r.tmax == null ? null
+      : rampa(["#2C5A85","#7FA9C4","#D9C48F","#C77A4B","#9E3B26"], (r.tmax + 5) / 45),
+    texto: r => r.tmax == null ? "sin dato de máxima" : `máxima de ${n1(r.tmax)} °C`
+  }
+};
+
+function pintaMosaico(){
+  const svg = document.getElementById("mosaico");
+  const esc = ESCALAS[modoActivo];
+  const anios = anioActivo === "todos"
+    ? [...new Set(DIAS.map(r => r.a))].sort()
+    : [+anioActivo];
+
+  const C = 13, H = 3, MI = 34, MS = 20;   // celda, hueco, margen izquierdo y superior
+  const anchoFila = 31 * (C + H);
+  const altoAnio = 12 * (C + H) + 26;
+  const ancho = MI + anchoFila + 6;
+  const alto = MS + anios.length * altoAnio;
+  svg.setAttribute("viewBox", `0 0 ${ancho} ${alto}`);
+
+  let s = "";
+  // números de los días
+  for (let d = 1; d <= 31; d += 5){
+    s += `<text x="${MI + (d-1)*(C+H) + C/2}" y="${MS - 7}" font-size="8" fill="#5A6874"
+           text-anchor="middle" font-family="SF Mono,Menlo,monospace">${d}</text>`;
+  }
+
+  anios.forEach((a, k) => {
+    const y0 = MS + k * altoAnio;
+    if (anios.length > 1){
+      s += `<text x="0" y="${y0 + 9}" font-size="11" fill="#16202B" font-weight="600"
+             font-family="Futura,Avenir Next,sans-serif" letter-spacing="1.4">${a}</text>`;
+    }
+    for (let m = 1; m <= 12; m++){
+      const y = y0 + (anios.length > 1 ? 18 : 0) + (m-1)*(C+H);
+      s += `<text x="${MI - 7}" y="${y + C - 3}" font-size="8.5" fill="#5A6874"
+             text-anchor="end" font-family="SF Mono,Menlo,monospace">${MES3[m-1]}</text>`;
+      for (let d = 1; d <= diasMes(a, m); d++){
+        const x = MI + (d-1)*(C+H);
+        const clave = `${a}-${String(m).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+        const r = porFecha.get(clave);
+        const c = r ? esc.color(r) : null;
+        s += `<rect class="dia" data-f="${clave}" x="${x}" y="${y}" width="${C}" height="${C}"
+               fill="${c || "#FFFFFF"}" stroke="${c ? "none" : "#D6DBD4"}"
+               stroke-dasharray="${c ? "" : "2 2"}"><title>${clave}</title></rect>`;
+      }
+    }
+  });
+  svg.innerHTML = s;
+
+  svg.querySelectorAll("rect.dia").forEach(el => {
+    const leer = () => muestraDia(el.dataset.f);
+    el.addEventListener("mouseenter", leer);
+    el.addEventListener("click", leer);
+  });
+
+  // leyenda
+  const muestras = esc.tramos.map((_, i) =>
+    `<i style="background:${esc.color({prec: i*7.5, racha: i*11, tmin: -i*3.25, tmax: i*10-5})}"></i>`).join("");
+  document.getElementById("escala").innerHTML =
+    `<span class="rotulo" style="letter-spacing:.16em">${esc.titulo}</span>
+     <span>${esc.tramos[0]}</span><span class="muestras">${muestras}</span>
+     <span>${esc.tramos[esc.tramos.length-1]}</span>
+     <span style="margin-left:8px">· recuadro punteado = sin registro</span>`;
+}
+
+function muestraDia(f){
+  const r = porFecha.get(f);
+  const caja = document.getElementById("lectura");
+  if (!r){
+    caja.innerHTML = `<span class="fecha">${fechaLarga(f)}</span>La estación no registró nada este día.`;
+    return;
+  }
+  const trozos = [];
+  if (r.tmax != null || r.tmin != null)
+    trozos.push(`máxima <b>${n1(r.tmax)} °C</b> · mínima <b>${n1(r.tmin)} °C</b>`);
+  trozos.push(r.prec == null ? "sin dato de lluvia"
+    : r.prec < 0.2 ? "no llovió" : `llovieron <b>${n1(r.prec)} mm</b>`);
+  if (r.racha > 0) trozos.push(`<b>${r.racha}</b> días seguidos sin llover`);
+  caja.innerHTML = `<span class="fecha">${fechaLarga(f)}</span>${trozos.join(" · ")}`;
+}
+
+/* ---------- cifras ---------- */
+function pintaCifras(){
+  const filas = seleccion();
+  const tmaxs = filas.map(r => r.tmax).filter(v => v != null);
+  const tmins = filas.map(r => r.tmin).filter(v => v != null);
+  const precs = filas.map(r => r.prec).filter(v => v != null);
+  const anios = new Set(filas.map(r => r.a)).size || 1;
+
+  const lluvia = precs.reduce((a,b) => a+b, 0);
+  const rachaMax = rachasSequia(filas)[0];
+
+  document.getElementById("titulo-cifras").textContent =
+    anioActivo === "todos" ? "Las cifras de todo el registro" : `Las cifras de ${anioActivo}`;
+
+  const tarjetas = [
+    [n0(lluvia / (anioActivo === "todos" ? anios : 1)) + " mm",
+     anioActivo === "todos" ? "de lluvia al año, de media" : "de lluvia en el año"],
+    [n0(precs.filter(p => p >= SECO).length / (anioActivo === "todos" ? anios : 1)),
+     "días de lluvia (1 mm o más)"],
+    [rachaMax ? rachaMax.n : "—", "días seguidos sin llover, la racha más larga"],
+    [n0(tmins.filter(t => t < 0).length / (anioActivo === "todos" ? anios : 1)), "días de helada"],
+    [n1(media(tmaxs)) + " °C", "media de las máximas"],
+    [n1(media(tmins)) + " °C", "media de las mínimas"],
+    [tmaxs.length ? n1(Math.max(...tmaxs)) + " °C" : "—", "la máxima más alta"],
+    [tmins.length ? n1(Math.min(...tmins)) + " °C" : "—", "la mínima más baja"],
+    [n0(tmaxs.filter(t => t >= 30).length / (anioActivo === "todos" ? anios : 1)), "días de 30 °C o más"],
+    [filas.length, anioActivo === "todos" ? "días registrados en total" : "días registrados"]
+  ];
+  document.getElementById("cifras").innerHTML = tarjetas
+    .map(([v, p]) => `<div><span class="valor">${v}</span><span class="pie">${p}</span></div>`).join("");
+}
+
+/* ---------- gráfico de lluvia ---------- */
+function pintaLluvia(){
+  const filas = seleccion();
+  const acumulado = Array.from({length:12}, () => []);
+  const porAnioMes = new Map();
+  for (const r of filas){
+    if (r.prec == null) continue;
+    const k = `${r.a}-${r.m}`;
+    porAnioMes.set(k, (porAnioMes.get(k) || 0) + r.prec);
+  }
+  for (const [k, v] of porAnioMes) acumulado[+k.split("-")[1] - 1].push(v);
+  const barras = acumulado.map(xs => media(xs) || 0);
+  const mediaGlobal = media(barras.filter(v => v > 0)) || 0;
+  const tope = Math.max(40, Math.ceil(Math.max(...barras) / 10) * 10);
+
+  const A = 700, AL = 260, MI = 40, MB = 34, MS = 14;
+  const ancho = (A - MI) / 12, util = AL - MB - MS;
+  let s = "";
+  for (let g = 0; g <= tope; g += Math.max(10, Math.round(tope/4/10)*10)){
+    const y = MS + util - (g/tope)*util;
+    s += `<line x1="${MI}" y1="${y}" x2="${A}" y2="${y}" stroke="#C9CFC7" stroke-width="1"/>
+          <text x="${MI-8}" y="${y+3.5}" font-size="10" fill="#5A6874" text-anchor="end"
+           font-family="SF Mono,Menlo,monospace">${g}</text>`;
+  }
+  barras.forEach((v, i) => {
+    const h = (v/tope)*util, x = MI + i*ancho + ancho*0.19;
+    s += `<rect x="${x}" y="${MS+util-h}" width="${ancho*0.62}" height="${Math.max(h,0.8)}"
+           fill="${rampa(["#7FBAB1","#2F7D75","#14453F"], Math.min(1, v/tope))}"><title>${MESES[i]}: ${n0(v)} mm</title></rect>
+          <text x="${MI+i*ancho+ancho/2}" y="${AL-14}" font-size="10.5" fill="#5A6874"
+           text-anchor="middle" font-family="SF Mono,Menlo,monospace">${MES3[i]}</text>
+          <text x="${MI+i*ancho+ancho/2}" y="${MS+util-h-6}" font-size="9.5" fill="#16202B"
+           text-anchor="middle" font-family="SF Mono,Menlo,monospace">${n0(v)}</text>`;
+  });
+  const ym = MS + util - (mediaGlobal/tope)*util;
+  s += `<line x1="${MI}" y1="${ym}" x2="${A}" y2="${ym}" stroke="#9E3B26" stroke-width="1.4" stroke-dasharray="5 4"/>
+        <text x="${A}" y="${ym-6}" font-size="10" fill="#9E3B26" text-anchor="end"
+         font-family="SF Mono,Menlo,monospace">media ${n0(mediaGlobal)} mm</text>`;
+  const g = document.getElementById("grafico-lluvia");
+  g.setAttribute("viewBox", `0 0 ${A+4} ${AL}`);
+  g.innerHTML = s;
+}
+
+/* ---------- gráfico de temperaturas ---------- */
+function pintaTemperatura(){
+  const filas = seleccion();
+  const maxs = Array.from({length:12}, () => []), mins = Array.from({length:12}, () => []);
+  for (const r of filas){
+    if (r.tmax != null) maxs[r.m-1].push(r.tmax);
+    if (r.tmin != null) mins[r.m-1].push(r.tmin);
+  }
+  const mx = maxs.map(media), mn = mins.map(media);
+  if (mx.every(v => v == null)){ document.getElementById("grafico-temperatura").innerHTML = ""; return; }
+  const lim = [Math.floor((Math.min(...mn.filter(v=>v!=null)) - 3)/5)*5,
+               Math.ceil((Math.max(...mx.filter(v=>v!=null)) + 3)/5)*5];
+
+  const A = 700, AL = 280, MI = 40, MB = 32, MS = 14;
+  const ancho = (A - MI) / 12, util = AL - MB - MS;
+  const py = v => MS + util - ((v - lim[0])/(lim[1]-lim[0]))*util;
+  const px = i => MI + i*ancho + ancho/2;
+
+  let s = "";
+  for (let g = lim[0]; g <= lim[1]; g += 5){
+    s += `<line x1="${MI}" y1="${py(g)}" x2="${A}" y2="${py(g)}"
+           stroke="${g === 0 ? "#2C5A85" : "#C9CFC7"}" stroke-width="${g === 0 ? 1.5 : 1}"/>
+          <text x="${MI-8}" y="${py(g)+3.5}" font-size="10" fill="#5A6874" text-anchor="end"
+           font-family="SF Mono,Menlo,monospace">${g}</text>`;
+  }
+  const arriba = mx.map((v,i) => v == null ? null : `${px(i)},${py(v)}`).filter(Boolean);
+  const abajo = mn.map((v,i) => v == null ? null : `${px(i)},${py(v)}`).filter(Boolean).reverse();
+  s += `<polygon points="${arriba.concat(abajo).join(" ")}" fill="#9E3B26" fill-opacity="0.14"/>
+        <polyline points="${arriba.join(" ")}" fill="none" stroke="#9E3B26" stroke-width="2.2"/>
+        <polyline points="${abajo.join(" ")}" fill="none" stroke="#2C5A85" stroke-width="2.2"/>`;
+  mx.forEach((v,i) => { if (v != null) s += `<circle cx="${px(i)}" cy="${py(v)}" r="3.2" fill="#9E3B26"><title>${MESES[i]}: máx. media ${n1(v)} °C</title></circle>`; });
+  mn.forEach((v,i) => { if (v != null) s += `<circle cx="${px(i)}" cy="${py(v)}" r="3.2" fill="#2C5A85"><title>${MESES[i]}: mín. media ${n1(v)} °C</title></circle>`; });
+  mx.forEach((_,i) => s += `<text x="${px(i)}" y="${AL-12}" font-size="10.5" fill="#5A6874"
+        text-anchor="middle" font-family="SF Mono,Menlo,monospace">${MES3[i]}</text>`);
+
+  const g = document.getElementById("grafico-temperatura");
+  g.setAttribute("viewBox", `0 0 ${A+4} ${AL}`);
+  g.innerHTML = s;
+}
+
+/* ---------- tablas ---------- */
+function pintaSequia(){
+  const r = rachasSequia(seleccion()).slice(0, 8);
+  document.getElementById("tabla-sequia").innerHTML =
+    `<tr><th>Racha</th><th>Empezó</th><th>Acabó</th><th>Días</th></tr>` +
+    (r.length ? r.map((x, i) =>
+      `<tr><td>${i+1}.ª más larga</td><td>${fechaLarga(x.ini)}</td><td>${fechaLarga(x.fin)}</td><td>${x.n}</td></tr>`
+    ).join("") : `<tr><td colspan="4">No hay rachas de cinco días o más.</td></tr>`);
+}
+
+function pintaHeladas(){
+  const anios = [...new Set(DIAS.map(r => r.a))].sort();
+  let s = `<tr><th>Año</th><th>Última de primavera</th><th>Primera de otoño</th><th>Días libres</th><th>Heladas</th></tr>`;
+  for (const a of anios){
+    const del = DIAS.filter(r => r.a === a && r.tmin != null);
+    const prim = del.filter(r => r.m <= 6 && r.tmin < 0).pop();
+    const otonio = del.filter(r => r.m >= 7 && r.tmin < 0)[0];
+    let libres = "—";
+    if (prim && otonio) libres = Math.round((new Date(otonio.f) - new Date(prim.f)) / 86400000) - 1;
+    s += `<tr><td>${a}</td><td>${prim ? fechaLarga(prim.f).replace(` de ${a}`, "") : "—"}</td>` +
+         `<td>${otonio ? fechaLarga(otonio.f).replace(` de ${a}`, "") : "—"}</td>` +
+         `<td>${libres}</td><td>${del.filter(r => r.tmin < 0).length}</td></tr>`;
+  }
+  document.getElementById("tabla-heladas").innerHTML = s;
+}
+
+function pintaRecords(){
+  const con = (campo, cmp) => DIAS.filter(r => r[campo] != null).sort(cmp)[0];
+  const masCalor = con("tmax", (a,b) => b.tmax - a.tmax);
+  const masFrio = con("tmin", (a,b) => a.tmin - b.tmin);
+  const masLluvia = con("prec", (a,b) => b.prec - a.prec);
+  const masOsc = DIAS.filter(r => r.tmax != null && r.tmin != null)
+    .sort((a,b) => (b.tmax-b.tmin) - (a.tmax-a.tmin))[0];
+  const rachaTotal = rachasSequia(DIAS)[0];
+
+  const f = [
+    ["El día más caluroso", masCalor && `${n1(masCalor.tmax)} °C`, masCalor && fechaLarga(masCalor.f)],
+    ["La noche más fría", masFrio && `${n1(masFrio.tmin)} °C`, masFrio && fechaLarga(masFrio.f)],
+    ["El día de más lluvia", masLluvia && `${n1(masLluvia.prec)} mm`, masLluvia && fechaLarga(masLluvia.f)],
+    ["El mayor salto en un día", masOsc && `${n1(masOsc.tmax - masOsc.tmin)} °C`, masOsc && fechaLarga(masOsc.f)],
+    ["La sequía más larga", rachaTotal && `${rachaTotal.n} días`, rachaTotal && `desde el ${fechaLarga(rachaTotal.ini)}`]
+  ].filter(x => x[1]);
+
+  document.getElementById("tabla-records").innerHTML =
+    `<tr><th>Récord</th><th>Marca</th><th>Cuándo</th></tr>` +
+    f.map(([a,b,c]) => `<tr><td>${a}</td><td>${b}</td><td style="text-align:right;font-family:inherit">${c}</td></tr>`).join("");
+}
+
+function pintaHuecos(){
+  const anios = [...new Set(DIAS.map(r => r.a))].sort();
+  let s = `<tr><th>Año</th><th>Días registrados</th><th>Cobertura</th><th>Hueco mayor</th></tr>`;
+  for (const a of anios){
+    const del = DIAS.filter(r => r.a === a);
+    const primero = new Date(del[0].f), ultimo = new Date(del[del.length-1].f);
+    const posibles = Math.round((ultimo - primero) / 86400000) + 1;
+    let mayor = 0, mayorIni = "";
+    for (let i = 1; i < del.length; i++){
+      const salto = Math.round((new Date(del[i].f) - new Date(del[i-1].f)) / 86400000) - 1;
+      if (salto > mayor){ mayor = salto; mayorIni = del[i-1].f; }
+    }
+    s += `<tr><td>${a}</td><td>${del.length}</td><td>${Math.round(100*del.length/posibles)} %</td>` +
+         `<td>${mayor ? `${mayor} días desde el ${fechaLarga(mayorIni).replace(` de ${a}`,"")}` : "ninguno"}</td></tr>`;
+  }
+  document.getElementById("tabla-huecos").innerHTML = s;
+}
+
+/* ---------- arranque ---------- */
+function arranca(filas){
+  DIAS = filas;
+  // racha de sequía acumulada en cada día
+  let racha = 0;
+  for (const r of DIAS){
+    if (r.prec == null) racha = 0;
+    else if (r.prec < SECO) racha++;
+    else racha = 0;
+    r.racha = racha;
+  }
+  porFecha.clear();
+  DIAS.forEach(r => porFecha.set(r.f, r));
+
+  document.getElementById("periodo").textContent =
+    `Registrando desde el ${fechaLarga(DIAS[0].f)}`;
+
+  const anios = [...new Set(DIAS.map(r => r.a))].sort();
+  document.getElementById("anios").innerHTML =
+    [["todos","Todo el registro"]].concat(anios.map(a => [String(a), String(a)]))
+      .map(([v,t]) => `<button data-anio="${v}" aria-pressed="${v==="todos"}">${t}</button>`).join("");
+  document.querySelectorAll("#anios button").forEach(b =>
+    b.addEventListener("click", () => {
+      anioActivo = b.dataset.anio;
+      document.querySelectorAll("#anios button").forEach(o =>
+        o.setAttribute("aria-pressed", o === b));
+      redibuja();
+    }));
+
+  document.getElementById("zona-carga").classList.add("oculto");
+  document.getElementById("panel").classList.remove("oculto");
+  redibuja();
+  pintaRecords();
+  pintaHuecos();
+  montaComparador();
+}
+
+function redibuja(){
+  pintaMosaico(); pintaCifras(); pintaLluvia(); pintaTemperatura(); pintaSequia(); pintaHeladas();
+}
+
+document.querySelectorAll("#modos button").forEach(b =>
+  b.addEventListener("click", () => {
+    modoActivo = b.dataset.modo;
+    document.querySelectorAll("#modos button").forEach(o =>
+      o.setAttribute("aria-pressed", o === b));
+    pintaMosaico();
+  }));
+
+/* ---------- carga de fichero ---------- */
+const zona = document.getElementById("zona-carga");
+const entrada = document.getElementById("entrada");
+const aviso = document.getElementById("aviso");
+
+function procesa(fichero){
+  const lector = new FileReader();
+  lector.onload = () => {
+    try { arranca(leeCSV(lector.result)); aviso.style.display = "none"; }
+    catch (e){ aviso.textContent = e.message; aviso.style.display = "block"; }
+  };
+  lector.onerror = () => {
+    aviso.textContent = "No he podido leer el fichero. Prueba a copiarlo a otra carpeta.";
+    aviso.style.display = "block";
+  };
+  lector.readAsText(fichero, "utf-8");
+}
+
+document.getElementById("btn-buscar").addEventListener("click", () => entrada.click());
+entrada.addEventListener("change", () => entrada.files[0] && procesa(entrada.files[0]));
+["dragenter","dragover"].forEach(ev => zona.addEventListener(ev, e => {
+  e.preventDefault(); zona.classList.add("encima");
+}));
+["dragleave","drop"].forEach(ev => zona.addEventListener(ev, e => {
+  e.preventDefault(); zona.classList.remove("encima");
+}));
+zona.addEventListener("drop", e => {
+  const f = e.dataTransfer.files[0];
+  if (f) procesa(f);
+});
+
+document.getElementById("btn-otro").addEventListener("click", () => {
+  document.getElementById("panel").classList.add("oculto");
+  document.getElementById("zona-carga").classList.remove("oculto");
+  entrada.value = "";
+});
+
+
+/* ================= COMPARADOR ================= */
+
+const METRICAS = {
+  lluvia:     {t:"Lluvia acumulada", u:" mm", dec:0, paleta:["#EDEFEA","#7FBAB1","#2F7D75","#14453F"],
+               v: fs => { const p = fs.map(r=>r.prec).filter(x=>x!=null); return p.length ? p.reduce((a,b)=>a+b,0) : null; }},
+  diaslluvia: {t:"Días de lluvia", u:"", dec:0, paleta:["#EDEFEA","#7FBAB1","#2F7D75","#14453F"],
+               v: fs => { const p = fs.map(r=>r.prec).filter(x=>x!=null); return p.length ? p.filter(x=>x>=SECO).length : null; }},
+  sequia:     {t:"Racha seca más larga", u:" días", dec:0, paleta:["#F0E9D6","#D9C48F","#B8935A","#8A6321"],
+               v: fs => { const r = fs.map(x=>x.racha).filter(x=>x!=null); return r.length ? Math.max(...r) : null; }},
+  heladas:    {t:"Días de helada", u:"", dec:0, paleta:["#EDEFEA","#C4D9E6","#7FA9C4","#2C5A85"],
+               v: fs => { const t = fs.map(r=>r.tmin).filter(x=>x!=null); return t.length ? t.filter(x=>x<0).length : null; }},
+  tmax:       {t:"Media de las máximas", u:" °C", dec:1, paleta:["#2C5A85","#7FA9C4","#D9C48F","#C77A4B","#9E3B26"],
+               v: fs => media(fs.map(r=>r.tmax).filter(x=>x!=null))},
+  tmin:       {t:"Media de las mínimas", u:" °C", dec:1, paleta:["#2C5A85","#7FA9C4","#D9C48F","#C77A4B","#9E3B26"],
+               v: fs => media(fs.map(r=>r.tmin).filter(x=>x!=null))},
+  tmed:       {t:"Temperatura media", u:" °C", dec:1, paleta:["#2C5A85","#7FA9C4","#D9C48F","#C77A4B","#9E3B26"],
+               v: fs => media(fs.map(r=> r.tmed != null ? r.tmed : (r.tmax!=null&&r.tmin!=null ? (r.tmax+r.tmin)/2 : null)).filter(x=>x!=null))},
+  calor:      {t:"Días de 30 °C o más", u:"", dec:0, paleta:["#EDEFEA","#D9C48F","#C77A4B","#9E3B26"],
+               v: fs => { const t = fs.map(r=>r.tmax).filter(x=>x!=null); return t.length ? t.filter(x=>x>=30).length : null; }}
+};
+
+let ejeActivo = "anios";
+let metricaActiva = "lluvia";
+let mesElegido = 7;
+let aniosComp = new Set();
+
+const fmtM = (v, m) => v == null ? "—" : (m.dec ? n1(v) : n0(v)) + m.u;
+
+function colorAnio(a, anios){
+  if (anios.length < 2) return "#2F7D75";
+  return rampa(["#2C5A85","#7FA9C4","#B8935A","#9E3B26"], anios.indexOf(a) / (anios.length - 1));
+}
+function claro(t){ return t > 0.62; }
+
+function celdas(a, m){
+  const fs = DIAS.filter(r => r.a === a && (m == null || r.m === m));
+  const esperados = m == null
+    ? (a === DIAS[0].a || a === DIAS[DIAS.length-1].a ? fs.length : (bisiesto(a) ? 366 : 365))
+    : diasMes(a, m);
+  return {fs, cobertura: esperados ? fs.length / esperados : 0};
+}
+
+/* ---------- gráfico ---------- */
+function pintaGraficoComparador(){
+  const svg = document.getElementById("grafico-comparador");
+  const m = METRICAS[metricaActiva];
+  const anios = [...new Set(DIAS.map(r => r.a))].sort();
+  const sel = anios.filter(a => aniosComp.has(a));
+  const A = 700, AL = 300, MI = 46, MB = 40, MS = 16;
+  const util = AL - MB - MS;
+
+  let puntos = [], etiquetas = [], series = [];
+  if (ejeActivo === "anios"){
+    etiquetas = MES3;
+    series = sel.map(a => ({
+      nombre: String(a), color: colorAnio(a, anios),
+      valores: MES3.map((_, i) => celdas(a, i + 1).fs.length ? m.v(celdas(a, i + 1).fs) : null)
+    }));
+  } else {
+    etiquetas = sel.map(String);
+    series = [{nombre: MESES[mesElegido - 1], color: "#2F7D75",
+      valores: sel.map(a => celdas(a, mesElegido).fs.length ? m.v(celdas(a, mesElegido).fs) : null)}];
+  }
+  series.forEach(s => puntos.push(...s.valores.filter(v => v != null)));
+  if (!puntos.length){ svg.innerHTML = ""; document.getElementById("pie-comparador").innerHTML = ""; return; }
+
+  let lo = Math.min(...puntos), hi = Math.max(...puntos);
+  if (m.dec === 0 && lo > 0) lo = 0;
+  const margen = (hi - lo) * 0.12 || 1;
+  lo -= margen; hi += margen;
+  const py = v => MS + util - ((v - lo) / (hi - lo)) * util;
+  const ancho = (A - MI) / etiquetas.length;
+  const px = i => MI + i * ancho + ancho / 2;
+
+  let g = "";
+  for (let k = 0; k <= 4; k++){
+    const v = lo + (hi - lo) * k / 4;
+    g += `<line x1="${MI}" y1="${py(v)}" x2="${A}" y2="${py(v)}" stroke="#C9CFC7" stroke-width="1"/>
+          <text x="${MI-8}" y="${py(v)+3.5}" font-size="10" fill="#5A6874" text-anchor="end"
+           font-family="SF Mono,Menlo,monospace">${m.dec ? n1(v) : n0(v)}</text>`;
+  }
+  const mediaG = media(puntos);
+  g += `<line x1="${MI}" y1="${py(mediaG)}" x2="${A}" y2="${py(mediaG)}" stroke="#16202B"
+         stroke-width="1.3" stroke-dasharray="5 4"/>
+        <text x="${A}" y="${py(mediaG)-6}" font-size="10" fill="#16202B" text-anchor="end"
+         font-family="SF Mono,Menlo,monospace">media ${fmtM(mediaG, m)}</text>`;
+
+  if (ejeActivo === "meses"){
+    series[0].valores.forEach((v, i) => {
+      if (v == null) return;
+      const y = Math.min(py(v), py(mediaG)), h = Math.abs(py(v) - py(mediaG));
+      g += `<rect x="${px(i) - ancho*0.26}" y="${y}" width="${ancho*0.52}" height="${Math.max(h,1.5)}"
+             fill="${v >= mediaG ? "#2F7D75" : "#9E3B26"}" fill-opacity="0.82">
+             <title>${etiquetas[i]}: ${fmtM(v, m)}</title></rect>`;
+    });
+  } else {
+    series.forEach(s => {
+      const pts = s.valores.map((v, i) => v == null ? null : `${px(i)},${py(v)}`).filter(Boolean);
+      if (pts.length > 1)
+        g += `<polyline points="${pts.join(" ")}" fill="none" stroke="${s.color}"
+               stroke-width="2.2" stroke-linejoin="round"/>`;
+      s.valores.forEach((v, i) => {
+        if (v != null) g += `<circle cx="${px(i)}" cy="${py(v)}" r="3" fill="${s.color}">
+          <title>${s.nombre} · ${etiquetas[i]}: ${fmtM(v, m)}</title></circle>`;
+      });
+    });
+  }
+  etiquetas.forEach((e, i) => g += `<text x="${px(i)}" y="${AL-16}" font-size="10.5" fill="#5A6874"
+    text-anchor="middle" font-family="SF Mono,Menlo,monospace">${e}</text>`);
+
+  svg.setAttribute("viewBox", `0 0 ${A+4} ${AL}`);
+  svg.innerHTML = g;
+
+  document.getElementById("pie-comparador").innerHTML =
+    `<span class="rotulo" style="letter-spacing:.16em">${m.t}</span>` +
+    (ejeActivo === "anios"
+      ? sel.map(a => `<span style="display:flex;align-items:center;gap:6px">
+          <i style="width:15px;height:3px;background:${colorAnio(a, anios)};display:block"></i>${a}</span>`).join("")
+      : `<span>barra verde: por encima de la media · barra roja: por debajo</span>`);
+}
+
+/* ---------- tabla ---------- */
+function pintaTablaComparador(){
+  const m = METRICAS[metricaActiva];
+  const anios = [...new Set(DIAS.map(r => r.a))].sort();
+  const sel = anios.filter(a => aniosComp.has(a));
+  const tabla = document.getElementById("tabla-comparador");
+  if (!sel.length){ tabla.innerHTML = `<tr><td>Elige al menos un año.</td></tr>`; return; }
+
+  if (ejeActivo === "anios"){
+    const datos = sel.map(a => ({a, meses: MES3.map((_, i) => {
+      const c = celdas(a, i + 1);
+      return {v: c.fs.length ? m.v(c.fs) : null, ok: c.cobertura >= 0.85};
+    })}));
+    const todos = datos.flatMap(d => d.meses.map(x => x.v)).filter(v => v != null);
+    const lo = Math.min(...todos), hi = Math.max(...todos);
+    const tinte = v => rampa(m.paleta, hi === lo ? 0.5 : (v - lo) / (hi - lo));
+
+    tabla.className = "matriz";
+    tabla.innerHTML =
+      `<tr><th>Año</th>${MES3.map(x => `<th>${x}</th>`).join("")}<th>Año entero</th></tr>` +
+      datos.map(d => {
+        const c = celdas(d.a, null);
+        const total = c.fs.length ? m.v(c.fs) : null;
+        const anioEntero = c.fs.length >= (bisiesto(d.a) ? 366 : 365) * 0.9;
+        return `<tr><td>${d.a}</td>` + d.meses.map(x =>
+          x.v == null ? `<td><span>—</span></td>`
+          : `<td class="${x.ok ? "" : "incompleto"}"><span style="background:${tinte(x.v)};color:${
+              claro((x.v - lo) / (hi - lo || 1)) ? "#EDEFEA" : "#16202B"}"
+              title="${MESES[d.meses.indexOf(x)]||""}">${m.dec ? n1(x.v) : n0(x.v)}</span></td>`
+        ).join("") + `<td title="${anioEntero ? "" : "Año incompleto: no es comparable con los demás"}"><span style="font-weight:600">${fmtM(total, m)}${anioEntero ? "" : " ⚠"}</span></td></tr>`;
+      }).join("");
+  } else {
+    const filas = sel.map(a => {
+      const c = celdas(a, mesElegido);
+      return {a, v: c.fs.length ? m.v(c.fs) : null, cob: c.cobertura, dias: c.fs.length};
+    }).filter(f => f.dias > 0);
+    if (!filas.length){
+      tabla.className = "";
+      tabla.innerHTML = `<tr><td>La estación no registró ningún ${MESES[mesElegido-1].toLowerCase()} en los años elegidos.</td></tr>`;
+      return;
+    }
+    const vals = filas.map(f => f.v).filter(v => v != null);
+    const med = media(vals);
+    tabla.className = "";
+    tabla.innerHTML =
+      `<tr><th>${MESES[mesElegido - 1]} de…</th><th>${m.t}</th><th>Frente a la media</th><th>Días registrados</th></tr>` +
+      filas.map(f => {
+        const dif = f.v == null || med == null ? null : f.v - med;
+        const signo = dif == null ? "" : dif >= 0 ? "mas" : "menos";
+        return `<tr><td>${f.a}</td><td>${fmtM(f.v, m)}</td>` +
+               `<td class="desv ${signo}">${dif == null ? "—" : (Math.abs(dif) < (m.dec ? 0.05 : 0.5) ? "en la media" : (dif >= 0 ? "+" : "−") + fmtM(Math.abs(dif), m))}</td>` +
+               `<td>${f.dias} de ${diasMes(f.a, mesElegido)}${f.cob < 0.85 ? " ⚠" : ""}</td></tr>`;
+      }).join("") +
+      `<tr><td style="font-weight:600">Media de los años elegidos</td><td style="font-weight:600">${fmtM(med, m)}</td><td>—</td><td>—</td></tr>`;
+  }
+}
+
+function pintaComparador(){ pintaGraficoComparador(); pintaTablaComparador(); }
+
+/* ---------- controles ---------- */
+function montaComparador(){
+  const anios = [...new Set(DIAS.map(r => r.a))].sort();
+  aniosComp = new Set(anios);
+
+  document.getElementById("metrica").innerHTML =
+    Object.entries(METRICAS).map(([k, v]) => `<option value="${k}">${v.t}</option>`).join("");
+  document.getElementById("mes-elegido").innerHTML =
+    MESES.map((x, i) => `<option value="${i+1}"${i+1 === mesElegido ? " selected" : ""}>${x}</option>`).join("");
+
+  const chips = document.getElementById("chips-anios");
+  chips.innerHTML =
+    `<button class="todos" data-todos="1" aria-pressed="true">Solo el último año</button>` +
+    anios.map(a => `<button data-anio="${a}" aria-pressed="true"><i style="background:${colorAnio(a, anios)}"></i>${a}</button>`).join("");
+
+  const refresca = () => {
+    chips.querySelectorAll("button[data-anio]").forEach(b =>
+      b.setAttribute("aria-pressed", aniosComp.has(+b.dataset.anio)));
+    const bt = chips.querySelector("button[data-todos]");
+    bt.setAttribute("aria-pressed", aniosComp.size === anios.length);
+    bt.textContent = aniosComp.size === anios.length ? "Solo el último año" : "Todos los años";
+    pintaComparador();
+  };
+  chips.querySelectorAll("button[data-anio]").forEach(b =>
+    b.addEventListener("click", () => {
+      const a = +b.dataset.anio;
+      aniosComp.has(a) ? aniosComp.delete(a) : aniosComp.add(a);
+      if (!aniosComp.size) aniosComp.add(a);
+      refresca();
+    }));
+  chips.querySelector("button[data-todos]").addEventListener("click", () => {
+    aniosComp = aniosComp.size === anios.length ? new Set([anios[anios.length - 1]]) : new Set(anios);
+    refresca();
+  });
+
+  document.getElementById("metrica").addEventListener("change", e => {
+    metricaActiva = e.target.value; pintaComparador();
+  });
+  document.getElementById("mes-elegido").addEventListener("change", e => {
+    mesElegido = +e.target.value; pintaComparador();
+  });
+  document.querySelectorAll("#ejes button").forEach(b =>
+    b.addEventListener("click", () => {
+      ejeActivo = b.dataset.eje;
+      document.querySelectorAll("#ejes button").forEach(o => o.setAttribute("aria-pressed", o === b));
+      document.getElementById("envoltura-mes").classList.toggle("oculto", ejeActivo !== "meses");
+      document.querySelector("#comparador h2").textContent =
+        ejeActivo === "anios" ? "Un año contra otro" : "El mismo mes, año tras año";
+      pintaComparador();
+    }));
+
+  pintaComparador();
+}
+
+/* ---------- exportar copia con datos dentro ---------- */
+document.getElementById("btn-exportar").addEventListener("click", () => {
+  const compacto = DIAS.map(r => [r.f, r.tmax, r.tmin, r.tmed, r.prec]);
+  const json = JSON.stringify(compacto);
+  const html = PLANTILLA.replace(
+    '<script id="datos-incrustados" type="application/json">null<\/script>',
+    '<script id="datos-incrustados" type="application/json">' + json + '<\/script>'
+  );
+  const blob = new Blob(["<!DOCTYPE html>\n" + html], {type:"text/html;charset=utf-8"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "estacion-cerezo-" + new Date().toISOString().slice(0,10) + ".html";
+  a.click();
+  setTimeout(() => { try { URL.revokeObjectURL(a.href); } catch (e) {} }, 4000);
+});
+
+/* ---------- ¿venimos con datos dentro? ---------- */
+(function(){
+  const bruto = document.getElementById("datos-incrustados").textContent.trim();
+  if (bruto && bruto !== "null"){
+    try {
+      const d = JSON.parse(bruto);
+      if (Array.isArray(d) && d.length){
+        arranca(d.map(([f, tmax, tmin, tmed, prec]) => ({
+          f, a:+f.slice(0,4), m:+f.slice(5,7), d:+f.slice(8,10), tmax, tmin, tmed, prec
+        })));
+      }
+    } catch (e){ /* si falla, se queda la pantalla de carga */ }
+  }
+})();
+</script>
