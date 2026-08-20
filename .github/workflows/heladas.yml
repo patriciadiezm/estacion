@@ -1,0 +1,67 @@
+name: Registro de heladas
+
+on:
+  schedule:
+    - cron: "10 19 * * *"   # al anochecer: apunta las predicciones
+    - cron: "10 7 * * *"    # por la mañana: apunta lo que pasó de verdad
+  workflow_dispatch:
+    inputs:
+      orden:
+        description: "Qué hacer (déjalo en automático si no sabes)"
+        required: false
+        default: automatico
+        type: choice
+        options: [automatico, noche, manana, resumen]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: heladas
+  cancel-in-progress: false
+
+jobs:
+  registrar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Decidir si toca noche o mañana
+        id: decidir
+        run: |
+          ORDEN="${{ inputs.orden }}"
+          if [ -z "$ORDEN" ] || [ "$ORDEN" = "automatico" ]; then
+            # a partir del mediodía UTC es la pasada del anochecer
+            if [ "$(date -u +%H)" -ge 12 ]; then ORDEN=noche; else ORDEN=manana; fi
+          fi
+          echo "orden=$ORDEN" >> "$GITHUB_OUTPUT"
+          echo "Toca: $ORDEN"
+
+      - name: Ejecutar
+        env:
+          WU_API_KEY: ${{ secrets.WU_API_KEY }}
+          AEMET_API_KEY: ${{ secrets.AEMET_API_KEY }}
+          MUNICIPIO: ${{ vars.MUNICIPIO }}
+        run: |
+          python3 heladas.py ${{ steps.decidir.outputs.orden }}
+          if [ -f heladas_registro.csv ]; then
+            echo "--- balance hasta ahora ---"
+            python3 heladas.py resumen || true
+          fi
+
+      - name: Guardar el registro
+        run: |
+          git config user.name "Estación de Cerezo"
+          git config user.email "actions@github.com"
+          git add heladas_registro.csv 2>/dev/null || true
+          if git diff --staged --quiet; then
+            echo "Nada nuevo que guardar."
+          else
+            git commit -m "Heladas: ${{ steps.decidir.outputs.orden }} del $(date -u +%Y-%m-%d)"
+            git pull --rebase --autostash
+            git push
+          fi
