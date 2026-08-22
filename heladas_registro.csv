@@ -1,3 +1,3 @@
 noche,aemet_min,aemet_max,aemet_cielo,t_anochecer,rocio_anochecer,viento_anochecer,humedad_anochecer,presion_anochecer,base_rocio,base_media,noche_despejada,min_real,error_aemet,error_rocio,error_media
 2026-08-20,14,25,Nuboso con lluvia escasa,16,15,0,94,1005.22,15,15.5,1,15,1.0,0.0,-0.5
-2026-08-21,12,29,Intervalos nubosos,21,12,0,54,1007.62,12,16.5,1,,,,
+2026-08-21,12,29,Intervalos nubosos,21,12,0,54,1007.62,12,16.5,1,12,0.0,0.0,-4.5
