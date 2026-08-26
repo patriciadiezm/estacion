@@ -537,7 +537,7 @@ function pintaCifras(){
     anioActivo === "todos" ? "Las cifras de todo el registro" : `Las cifras de ${anioActivo}`;
 
   const tarjetas = [
-    [n0(lluvia / (anioActivo === "todos" ? anios : 1)) + " mm",
+    [n1(lluvia / (anioActivo === "todos" ? anios : 1)) + " mm",
      anioActivo === "todos" ? "de lluvia al año, de media" : "de lluvia en el año"],
     [n0(precs.filter(p => p >= SECO).length / (anioActivo === "todos" ? anios : 1)),
      "días de lluvia (1 mm o más)"],
@@ -581,16 +581,19 @@ function pintaLluvia(){
   barras.forEach((v, i) => {
     const h = (v/tope)*util, x = MI + i*ancho + ancho*0.19;
     s += `<rect x="${x}" y="${MS+util-h}" width="${ancho*0.62}" height="${Math.max(h,0.8)}"
-           fill="${rampa(["#7FBAB1","#2F7D75","#14453F"], Math.min(1, v/tope))}"><title>${MESES[i]}: ${n0(v)} mm</title></rect>
+           fill="${rampa(["#7FBAB1","#2F7D75","#14453F"], Math.min(1, v/tope))}"><title>${MESES[i]}: ${n1(v)} mm</title></rect>
           <text x="${MI+i*ancho+ancho/2}" y="${AL-14}" font-size="10.5" fill="#5A6874"
            text-anchor="middle" font-family="SF Mono,Menlo,monospace">${MES3[i]}</text>
           <text x="${MI+i*ancho+ancho/2}" y="${MS+util-h-6}" font-size="9.5" fill="#16202B"
-           text-anchor="middle" font-family="SF Mono,Menlo,monospace">${n0(v)}</text>`;
+           text-anchor="middle" font-family="SF Mono,Menlo,monospace">${n1(v)}</text>`;
   });
   const ym = MS + util - (mediaGlobal/tope)*util;
+  const etiquetaMedia = `media ${n1(mediaGlobal)} mm`;
+  const anchoEtiqueta = etiquetaMedia.length * 6.1 + 6;
   s += `<line x1="${MI}" y1="${ym}" x2="${A}" y2="${ym}" stroke="#9E3B26" stroke-width="1.4" stroke-dasharray="5 4"/>
+        <rect x="${A-anchoEtiqueta}" y="${ym-16}" width="${anchoEtiqueta}" height="13" fill="var(--papel)" opacity="0.92" rx="2"/>
         <text x="${A}" y="${ym-6}" font-size="10" fill="#9E3B26" text-anchor="end"
-         font-family="SF Mono,Menlo,monospace">media ${n0(mediaGlobal)} mm</text>`;
+         font-family="SF Mono,Menlo,monospace">${etiquetaMedia}</text>`;
   const g = document.getElementById("grafico-lluvia");
   g.setAttribute("viewBox", `0 0 ${A+4} ${AL}`);
   g.innerHTML = s;
@@ -792,7 +795,7 @@ document.getElementById("btn-otro").addEventListener("click", () => {
 /* ================= COMPARADOR ================= */
 
 const METRICAS = {
-  lluvia:     {t:"Lluvia acumulada", u:" mm", dec:0, paleta:["#EDEFEA","#7FBAB1","#2F7D75","#14453F"],
+  lluvia:     {t:"Lluvia acumulada", u:" mm", dec:1, paleta:["#EDEFEA","#7FBAB1","#2F7D75","#14453F"],
                v: fs => { const p = fs.map(r=>r.prec).filter(x=>x!=null); return p.length ? p.reduce((a,b)=>a+b,0) : null; }},
   diaslluvia: {t:"Días de lluvia", u:"", dec:0, paleta:["#EDEFEA","#7FBAB1","#2F7D75","#14453F"],
                v: fs => { const p = fs.map(r=>r.prec).filter(x=>x!=null); return p.length ? p.filter(x=>x>=SECO).length : null; }},
