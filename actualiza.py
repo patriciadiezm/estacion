@@ -33,6 +33,7 @@ CSV_DATOS = "icerez2_diario.csv"
 PLANTILLA = "plantilla.html"
 SALIDA = "index.html"
 PRIMER_DIA = date(2020, 7, 15)
+RE_CHECK_DIAS = 2  # días recientes que se vuelven a pedir cada vez, por si llegaron incompletos
 
 BASE = "https://api.weather.com/v2/pws/history/daily"
 MARCADOR = '<script id="datos-incrustados" type="application/json">null</script>'
@@ -117,13 +118,20 @@ def guarda_csv(columnas, filas, nuevas):
         for c in fila:
             if c not in columnas:
                 columnas.append(c)
-    todas = filas + [{c: n.get(c, "") for c in columnas} for n in nuevas]
-    vistas, unicas = set(), []
-    for fila in sorted(todas, key=lambda x: x.get("obsTimeLocal", "")):
+    # Un mismo día puede llegar dos veces (la re-comprobación de los últimos
+    # días, ver RE_CHECK_DIAS en main()): si Weather Underground aún no había
+    # cerrado el día la primera vez, el registro nuevo debe pisar al viejo,
+    # nunca al revés.
+    por_fecha = {}
+    for fila in filas:
         clave = fila.get("obsTimeLocal", "")[:10]
-        if clave and clave not in vistas:
-            vistas.add(clave)
-            unicas.append(fila)
+        if clave:
+            por_fecha[clave] = fila
+    for fila in nuevas:
+        clave = fila.get("obsTimeLocal", "")[:10]
+        if clave:
+            por_fecha[clave] = {c: fila.get(c, "") for c in columnas}
+    unicas = [por_fecha[clave] for clave in sorted(por_fecha)]
     with open(CSV_DATOS, "w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=columnas)
         w.writeheader()
@@ -174,7 +182,14 @@ def construye_html(filas):
 def main():
     columnas, filas = carga_csv()
     ayer = date.today() - timedelta(days=1)
-    desde = ultimo_dia(filas) + timedelta(days=1)
+    ultimo = ultimo_dia(filas)
+
+    # Weather Underground a veces no ha cerrado del todo el día cuando este
+    # script lo pide a primera hora (se guarda un total parcial, ej. solo
+    # hasta las 10 de la mañana). Para que eso se corrija solo, cada vez
+    # volvemos a pedir también los RE_CHECK_DIAS días más recientes que ya
+    # teníamos guardados, no solo los que faltan.
+    desde = max(PRIMER_DIA, min(ultimo + timedelta(days=1), ayer) - timedelta(days=RE_CHECK_DIAS - 1))
 
     if desde > ayer:
         print("El CSV ya está al día. Reconstruyo la página por si acaso.")
@@ -185,7 +200,8 @@ def main():
             print(f"Aviso: faltan {(ayer - desde).days} días. Bajo los 45 más "
                   f"recientes; vuelve a lanzarlo para seguir.")
             desde = ayer - timedelta(days=45)
-        print(f"Pidiendo del {desde} al {ayer}:")
+        print(f"Pidiendo del {desde} al {ayer} "
+              f"(los últimos {RE_CHECK_DIAS} días ya guardados se vuelven a comprobar):")
         nuevas = descarga_pendientes(desde, ayer)
 
     filas = guarda_csv(columnas, filas, nuevas) if nuevas else filas
