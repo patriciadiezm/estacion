@@ -83,4 +83,4 @@ noche,aemet_min,aemet_max,aemet_cielo,t_anochecer,rocio_anochecer,viento_anochec
 2026-11-09,10,16,Muy nuboso con lluvia,12,10,0,83,1002.03,10,11.0,1,12,2.0,2.0,1.0
 2026-11-10,8,14,Cubierto con lluvia,12,11,3,95,1011.14,11,11.5,1,12,4.0,1.0,0.5
 2026-11-11,7,14,Cubierto con lluvia,12,10,4,90,1002.54,10,11.0,1,12,5.0,2.0,1.0
-2026-11-12,6,14,Cubierto con lluvia,11,10,1,91,1005.42,10,10.5,1,,,,
+2026-11-12,6,14,Cubierto con lluvia,11,10,1,91,1005.42,10,10.5,1,9,3.0,-1.0,-1.5
